@@ -46,7 +46,7 @@ ArrayList<Livro> livros = (ArrayList<Livro>) request.getAttribute("livros");
 					<td><%=livro.getAutor().getNome()%></td>
 					<td><%=livro.getStatus()%></td>
 					<td>
-						<a href="inserir.jsp">
+						<a href="select?id=<%=livro.getId()%>">
 							<button class="button is-small is-info"><i class="fa-solid fa-pen-to-square"></i>Editar</button>
 						</a> 
 						<a href="javascript: confirmar(<%=livro.getId()%>)">
