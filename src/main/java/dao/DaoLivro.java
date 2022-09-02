@@ -2,7 +2,6 @@ package dao;
 
 import java.sql.Connection;
 import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,23 +14,6 @@ import model.LivroStatus;
 
 public class DaoLivro {
 
-	private String driver = "com.mysql.cj.jdbc.Driver";
-	private String url = "jdbc:mysql://127.0.0.1:3306/dbBiblioteca?useTimezone=true&serverTimezone=UTC";
-	private String user = "root";
-	private String password = "54168275";
-
-	private Connection conectar() {
-		Connection con = null;
-		try {
-			Class.forName(driver);
-			con = DriverManager.getConnection(url, user, password);
-			return con;
-		} catch (Exception e) {
-			System.out.println(e);
-			return null;
-		}
-	}
-
 	// Listar os livros cadastrados -> READ
 	public ArrayList<Livro> listarLivros() {
 		ArrayList<Livro> livros = new ArrayList<>();
@@ -39,8 +21,8 @@ public class DaoLivro {
 				+ " FROM tbLivro AS tl " + " INNER JOIN tbAutor AS ta ON tl.autor = ta.id";
 
 		try {
-			Connection con = conectar();
-			PreparedStatement pst = con.prepareStatement(SQL);
+			Connection conexao = Conexao.novaConexao();
+			PreparedStatement pst = conexao.prepareStatement(SQL);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				// Definindo o status conforme as descrições do ENUM
@@ -68,7 +50,7 @@ public class DaoLivro {
 				Livro livro = new Livro(idLivro, nomeLivro, dataCriacao, autor, statusLivro);
 				livros.add(livro);
 			}
-			con.close();
+			conexao.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -79,9 +61,9 @@ public class DaoLivro {
 	public boolean inserirLivro(Livro livro) {
 		boolean resultado = false;
 		try {
-			Connection con = conectar();
+			Connection conexao = Conexao.novaConexao();
 			String sqlAutor = String.format("INSERT INTO tbAutor VALUES (null,'%s');", livro.getAutor().getNome());
-			PreparedStatement pst = con.prepareStatement(sqlAutor, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement pst = conexao.prepareStatement(sqlAutor, Statement.RETURN_GENERATED_KEYS);
 			pst.executeUpdate();
 			ResultSet rs = pst.getGeneratedKeys();
 
@@ -92,11 +74,12 @@ public class DaoLivro {
 				String sqlLivro = String.format(
 						"INSERT INTO tbLivro VALUES(null, '%s', '%s', %d, '%s')", 
 						livro.getNome(), livro.getDataCriacao(), idAutor, livro.getStatus());
-				PreparedStatement pstLivro = con.prepareStatement(sqlLivro, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement pstLivro = conexao.prepareStatement(sqlLivro, Statement.RETURN_GENERATED_KEYS);
 				pstLivro.executeUpdate();
 			}
 
 			resultado = true;
+			conexao.close();
 		} catch (SQLException e) {
 			System.out.println(e);
 		}
@@ -107,12 +90,12 @@ public class DaoLivro {
 	public Livro consultarLivro(int cod) {
 		Livro livro = new Livro(); 
 		try {
-			Connection con = conectar();
+			Connection conexao = Conexao.novaConexao();
 			String SQL = String.format(
 					"SELECT tl.id, tl.nome, tl.dataCriacao, tl.status, ta.id, ta.nome as nomeAutor FROM tbLivro AS tl " +
 					"INNER JOIN tbAutor AS ta ON tl.autor = ta.id WHERE tl.id = %s", cod
 			);
-			PreparedStatement pst = con.prepareStatement(SQL);
+			PreparedStatement pst = conexao.prepareStatement(SQL);
 			ResultSet rs = pst.executeQuery();
 			if(rs.next()) {
 				Autor autor = new Autor();
@@ -132,7 +115,7 @@ public class DaoLivro {
 				autor.setNome(rs.getString("nomeAutor"));
 				livro.setAutor(autor);
 			}
-			con.close();
+			conexao.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -143,12 +126,12 @@ public class DaoLivro {
 	public int alterarLivro(int idLivro, String status) {
 		int quantidade = 0;
 		try {
-			Connection con = conectar();
+			Connection conexao = Conexao.novaConexao();
 			String SQL = String.format("UPDATE tbLivro SET status = '%s' WHERE id = %d;", status, idLivro);
-			PreparedStatement pst = con.prepareStatement(SQL);
+			PreparedStatement pst = conexao.prepareStatement(SQL);
 			pst.executeUpdate(SQL);
 			quantidade = pst.getUpdateCount();
-			con.close();
+			conexao.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -159,12 +142,12 @@ public class DaoLivro {
 	public int excluirLivro(int cod) {
 		int quantidade = 0;
 		try {
-			Connection con = conectar();
+			Connection conexao = Conexao.novaConexao();
 			String SQL = String.format("DELETE FROM tbLivro WHERE id = %d;", cod);
-			PreparedStatement pst = con.prepareStatement(SQL);
+			PreparedStatement pst = conexao.prepareStatement(SQL);
 			pst.executeUpdate();
 			quantidade = pst.getUpdateCount();
-			con.close();
+			conexao.close();
 		} catch (Exception e) {
 			System.out.println(e);
 		}

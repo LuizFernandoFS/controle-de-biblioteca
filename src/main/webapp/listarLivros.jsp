@@ -16,11 +16,36 @@ ArrayList<Livro> livros = (ArrayList<Livro>) request.getAttribute("livros");
 <script src="https://kit.fontawesome.com/5c46874868.js"></script>
 </head>
 <body>
+
+	<%
+	String usuario = (String) session.getAttribute("usuario");
+	if (usuario == null) {
+		response.sendRedirect("login.jsp");
+	} else { %>
+		<p class="level"><strong> Bem vindo! <%= usuario %> </strong>
+		<a class = "level" href="logout.jsp">
+			<button class="button is-small is-danger is-rounded"><i class="fa-solid fa-right-from-bracket"></i>Sair</button>
+		</a>
+		</p>
+		
+	<%}%>
+
+
 	<div class="content is-medium">
 		<h1>Biblioteca <i class="fa-solid fa-book-open"></i></h1>
+		
 		<a href="inserir.jsp">
-			<button class="button is-normal is-primary"><i class="fa-solid fa-book"></i>Novo Livro</button>
+			<button class="button is-normal is-primary">
+				<i class="fa-solid fa-book"></i>Novo Livro
+			</button>
 		</a>
+		
+		<a href="inserir-usuario.jsp">
+			<button class="button is-normal is-primary">
+				<i class="fa-solid fa-user"></i>Novo Usuário
+			</button>
+		</a>
+		
 	</div>
 
 	<div class="content has-text-centered is-capitalized">
@@ -44,15 +69,16 @@ ArrayList<Livro> livros = (ArrayList<Livro>) request.getAttribute("livros");
 					<td><%=livro.getNome()%></td>
 					<td><%=livro.getDataCriacao()%></td>
 					<td><%=livro.getAutor().getNome()%></td>
-					<td><%=livro.getStatus()%></td>
-					<td>
-						<a href="select?id=<%=livro.getId()%>">
-							<button class="button is-small is-info"><i class="fa-solid fa-pen-to-square"></i>Editar</button>
-						</a> 
-						<a href="javascript: confirmar(<%=livro.getId()%>)">
-							<button class="button is-small is-danger"><i class="fa-solid fa-trash"></i>Excluir</button>
-						</a>
-					</td>
+					<td id="status"><%=livro.getStatus()%></td>
+					<td><a href="select?id=<%=livro.getId()%>">
+							<button class="button is-small is-info">
+								<i class="fa-solid fa-pen-to-square"></i>Editar
+							</button>
+					</a> <a href="javascript: confirmar(<%=livro.getId()%>)">
+							<button class="button is-small is-danger">
+								<i class="fa-solid fa-trash"></i>Excluir
+							</button>
+					</a></td>
 				</tr>
 				<%
 				}

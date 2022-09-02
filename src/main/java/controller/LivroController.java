@@ -12,11 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import dao.DaoLivro;
+import dao.DaoUsuario;
 import model.Autor;
 import model.Livro;
 import model.LivroStatus;
+import model.Usuario;
 
-@WebServlet(urlPatterns = {"/listagem", "/inserir", "/excluir", "/select", "/editar"})
+@WebServlet(urlPatterns = {"", "/listagem", "/inserir", "/inserir-usuario","/excluir", "/select", "/editar"})
 public class LivroController extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -28,7 +30,7 @@ public class LivroController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getServletPath();
 		System.out.println(action);
-		if(action.equals("/listagem")) {
+		if(action.equals("/listagem") || action.equals("")) {
 			listarLivros(request, response);
 		} else if(action.equals("/inserir")) {
 			novoLivro(request, response);
@@ -38,7 +40,9 @@ public class LivroController extends HttpServlet {
 			editarLivro(request, response);
 		} else if(action.equals("/excluir")) {
 			excluirLivro(request, response);
-		}
+		} else if(action.equals("/inserir-usuario")) {
+			novoUsuario(request, response);
+		} 
 	}
 	
 	protected void listarLivros(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -62,7 +66,6 @@ public class LivroController extends HttpServlet {
 	protected void excluirLivro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String id = request.getParameter("id");
 		Integer idLivro = Integer.parseInt(id);
-		System.out.println(id);
 		livro.setId(id);
 		daoLivro.excluirLivro(idLivro);
 		response.sendRedirect("listagem");
@@ -88,6 +91,17 @@ public class LivroController extends HttpServlet {
 		String id = request.getParameter("id");
 		String status = request.getParameter("status");
 		daoLivro.alterarLivro(Integer.parseInt(id), status);
+		response.sendRedirect("listagem");
+	}
+	
+	protected void novoUsuario(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String nome = request.getParameter("nome");
+		String email = request.getParameter("email");
+		String senha = request.getParameter("senha");
+		String tipo = "usuario";
+		Usuario usuario = new Usuario("null", nome, email, senha, tipo);
+		DaoUsuario DAO = new DaoUsuario();
+		DAO.inserirUsuario(usuario);
 		response.sendRedirect("listagem");
 	}
 	

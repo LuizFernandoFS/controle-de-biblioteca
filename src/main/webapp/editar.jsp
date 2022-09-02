@@ -20,13 +20,30 @@ LivroStatus status;
 			<label class="label">Código</label>
 			<input class="input is-primary is-small is-rounded" type="text" name="id" readonly value="<%out.print(request.getAttribute("id"));%>">
 			<label class="label">Nome</label>
-			<input class="input is-primary is-small is-rounded" type="text" name="nome" value="<%out.print(request.getAttribute("nome"));%>">	
+			<input class="input is-primary is-small is-rounded" type="text" name="nome" readonly value="<%out.print(request.getAttribute("nome"));%>">	
 			<label class="label">Data de Criação</label>
-			<input class="input is-primary is-small is-rounded" type="date" name="dataCriacao" value="<%out.print(request.getAttribute("dataCriacao"));%>">
+			<input class="input is-primary is-small is-rounded" type="date" name="dataCriacao" readonly value="<%out.print(request.getAttribute("dataCriacao"));%>">
 			<label class="label">Autor</label>
-			<input class="input is-primary is-small is-rounded" type="text" name="nomeAutor" value="<%out.print(request.getAttribute("nomeAutor"));%>">
+			<input class="input is-primary is-small is-rounded" type="text" name="nomeAutor" readonly value="<%out.print(request.getAttribute("nomeAutor"));%>">
 			<label class="label">Status</label>
-			<input class="input is-primary is-small is-rounded" type="text" name="status" value="<%out.print(request.getAttribute("status"));%>">
+			<div class="select is-primary is-rounded is-small">
+			<select name="status">
+				<%if(request.getAttribute("status").equals(LivroStatus.DISPONIVEL)) {%> 
+				<option value="DISPONIVEL" selected>Disponível</option>
+				<option value="EMPRESTADO" >Emprestado</option>
+				<option value="INDISPONIVEL">Indisponível</option>
+				<%} else if(request.getAttribute("status").equals(LivroStatus.EMPRESTADO)) {%> 
+				<option value="DISPONIVEL">Disponível</option>
+				<option value="EMPRESTADO" selected>Emprestado</option>
+				<option value="INDISPONIVEL">Indisponível</option>
+				<%} else { %> 
+				<option value="DISPONIVEL" >Disponível</option>
+				<option value="EMPRESTADO" >Emprestado</option>
+				<option value="INDISPONIVEL" selected>Indisponível</option>
+				<%}%>
+			</select>
+			</div>
+		
 			<br>
 			<a href="editar">
 				<br>

@@ -1,24 +1,20 @@
 package dao;
 
 import java.util.ArrayList;
-import model.Livro;
-import model.LivroStatus;
+import model.Usuario;
 
 public class TesteDao {
 
 	public static void main(String[] args) {
-		/*DaoLivro DAO = new DaoLivro();
-		//ArrayList<Livro> livros = DAO.listarLivros();
-		Livro livro = new Livro();
-		int qtd = DAO.excluirLivro(44);
-		System.out.println("Update > " + qtd);
+		DaoUsuario DAO = new DaoUsuario();
+		Usuario usuario = DAO.consultarLivro("3");
+		System.out.println(usuario.toString());
 		
-		livro = DAO.consultarLivro(44);
-		System.out.println(livro.getId());
-		System.out.println(livro.getNome());
-		System.out.println(livro.getAutor().getNome());
-		System.out.println(livro.getStatus());
-	
-		*/
+		/*Usuario usuario = new Usuario(null, "Jorjão", "jorjão@email.com", "jorjao", "usuario");
+		DAO.inserirUsuario(usuario);
+		ArrayList<Usuario> usuarios = DAO.listarUsuarios();
+		for(Usuario u : usuarios) {
+			System.out.println(u.toString());
+		}*/
 	}
 }
