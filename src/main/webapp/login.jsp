@@ -15,29 +15,21 @@
 	</div>
 
 	<div class="level-item">
-		<form class="form" action="login.jsp" method="post">
+		<form class="form" method="post" action="login">
 			<label>Usuário <i class="fa-solid fa-user"></i>
-				<input class="input is-primary is-small" type="text" name="usuario" ><br>
+				<input class="input is-primary is-small" type="text" name="usuario" required><br>
 			</label>
 			<label>Senha <i class="fa-solid fa-key"></i>
-				<input class="input is-primary is-small" type="password" name="senha"><br>
+				<input class="input is-primary is-small" type="password" name="senha" required><br>
 			</label>
 			<br>
-			<button class="button is-normal is-primary" type="submit" value="logar">
+			<button class="button is-normal is-primary" type="submit" value="submit">
 				<i class="fa-solid fa-right-to-bracket"></i>
 				Login
 			</button>
+			<p>OBS: Caso não tenha acesso ao sistema,<br>solicite ao usuário administrador!</p>
 		</form>
 	</div>
 
-	<%
-	String usuario = request.getParameter("usuario");
-	String senha = request.getParameter("usuario");
-
-	if (usuario != null && senha != null && !usuario.isEmpty() && !senha.isEmpty()) {
-		session.setAttribute("usuario", usuario);
-		response.sendRedirect("/biblioteca");
-	}
-	%>
 </body>
 </html>

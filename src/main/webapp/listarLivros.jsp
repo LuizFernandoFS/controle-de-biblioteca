@@ -1,3 +1,4 @@
+<%@page import="model.Usuario"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ page import="model.Livro"%>
@@ -16,36 +17,43 @@ ArrayList<Livro> livros = (ArrayList<Livro>) request.getAttribute("livros");
 <script src="https://kit.fontawesome.com/5c46874868.js"></script>
 </head>
 <body>
-
-	<%
-	String usuario = (String) session.getAttribute("usuario");
-	if (usuario == null) {
-		response.sendRedirect("login.jsp");
-	} else { %>
-		<p class="level"><strong> Bem vindo! <%= usuario %> </strong>
-		<a class = "level" href="logout.jsp">
-			<button class="button is-small is-danger is-rounded"><i class="fa-solid fa-right-from-bracket"></i>Sair</button>
-		</a>
-		</p>
+	
+	    <% String usuario = (String) request.getSession().getAttribute("usuario");
+		if(usuario != null) { %>
+			<p class="level"><strong> Bem vindo! <%= usuario %> </strong>
+			<a class = "level" href="logout.jsp">
+				<button class="button is-small is-danger is-rounded"><i class="fa-solid fa-right-from-bracket"></i>Sair</button>
+			</a>
+			</p>
+		<%} else { 
+			response.sendRedirect("login.jsp");	
+		}%>
 		
-	<%}%>
-
-
 	<div class="content is-medium">
-		<h1>Biblioteca <i class="fa-solid fa-book-open"></i></h1>
-		
+		<h1>
+			Biblioteca <i class="fa-solid fa-book-open"></i>
+		</h1>
+
 		<a href="inserir.jsp">
 			<button class="button is-normal is-primary">
 				<i class="fa-solid fa-book"></i>Novo Livro
 			</button>
-		</a>
+		</a> 
 		
-		<a href="inserir-usuario.jsp">
+		<% if(usuario.equals("admin")) { %>
+				<a href="inserir-usuario.jsp">
+					<button class="button is-normal is-primary">
+						<i class="fa-solid fa-user"></i>Novo Usuário
+					</button>
+				</a>
+			<%}%>
+		
+		<a href="relatorio" target="blank">
 			<button class="button is-normal is-primary">
-				<i class="fa-solid fa-user"></i>Novo Usuário
+				<i class="fa-solid fa-file-pdf"></i>Relatório PDF
 			</button>
-		</a>
-		
+		</a> 
+
 	</div>
 
 	<div class="content has-text-centered is-capitalized">
@@ -72,7 +80,7 @@ ArrayList<Livro> livros = (ArrayList<Livro>) request.getAttribute("livros");
 					<td id="status"><%=livro.getStatus()%></td>
 					<td><a href="select?id=<%=livro.getId()%>">
 							<button class="button is-small is-info">
-								<i class="fa-solid fa-pen-to-square"></i>Editar
+								<i class="fa-solid fa-pen-to-square"></i>Alterar Status
 							</button>
 					</a> <a href="javascript: confirmar(<%=livro.getId()%>)">
 							<button class="button is-small is-danger">

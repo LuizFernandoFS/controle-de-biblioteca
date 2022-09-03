@@ -11,6 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+
 import dao.DaoLivro;
 import dao.DaoUsuario;
 import model.Autor;
@@ -18,7 +24,7 @@ import model.Livro;
 import model.LivroStatus;
 import model.Usuario;
 
-@WebServlet(urlPatterns = {"", "/listagem", "/inserir", "/inserir-usuario","/excluir", "/select", "/editar"})
+@WebServlet(urlPatterns = {"", "/listagem", "/inserir", "/inserir-usuario","/excluir", "/select", "/editar", "/relatorio"})
 public class LivroController extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
@@ -42,14 +48,22 @@ public class LivroController extends HttpServlet {
 			excluirLivro(request, response);
 		} else if(action.equals("/inserir-usuario")) {
 			novoUsuario(request, response);
-		} 
+		} else if(action.equals("/relatorio")) {
+			gerarRelatorioPdf(request, response);
+		}
 	}
 	
 	protected void listarLivros(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		ArrayList<Livro> livros = daoLivro.listarLivros();
-		request.setAttribute("livros", livros);
-		RequestDispatcher rd = request.getRequestDispatcher("listarLivros.jsp");
-		rd.forward(request, response);
+		String usuario = (String) request.getSession().getAttribute("usuario");
+		if(usuario == null) {
+			response.sendRedirect("login.jsp");
+		} else {
+			request.setAttribute("livros", livros);
+			RequestDispatcher rd = request.getRequestDispatcher("listarLivros.jsp");
+			rd.forward(request, response);
+		}
+		
 	}
 	
 	protected void novoLivro(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -103,6 +117,41 @@ public class LivroController extends HttpServlet {
 		DaoUsuario DAO = new DaoUsuario();
 		DAO.inserirUsuario(usuario);
 		response.sendRedirect("listagem");
+	}
+	
+	protected void gerarRelatorioPdf(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Document documento = new Document();
+		DaoLivro DAO = new DaoLivro();
+		try {
+			//Tipo de conteúdo
+			response.setContentType("application/pdf");
+			//Nome do documento
+			response.addHeader("Content-Disposition", "inline; filename=" + "livros.pdf");
+			//Criar o documento
+			PdfWriter.getInstance(documento, response.getOutputStream());
+			//Abrir o documento -> conteúdo
+			documento.open();
+			documento.add(new Paragraph("Livros Cadastrados:"));
+			documento.add(new Paragraph(" "));
+			PdfPTable tabela = new PdfPTable(3);
+			PdfPCell col1 = new PdfPCell(new Paragraph("Nome"));
+			PdfPCell col2 = new PdfPCell(new Paragraph("Autor"));
+			PdfPCell col3 = new PdfPCell(new Paragraph("Status"));
+			tabela.addCell(col1);
+			tabela.addCell(col2);
+			tabela.addCell(col3);
+			ArrayList<Livro> lista = DAO.listarLivros();
+			for(Livro livro : lista) {
+				tabela.addCell(livro.getNome());
+				tabela.addCell(livro.getAutor().getNome());
+				tabela.addCell(livro.getStatus().toString());
+			}
+			documento.add(tabela);
+			documento.close();
+		} catch (Exception e) {
+			System.out.println(e);
+			documento.close();
+		}
 	}
 	
 }

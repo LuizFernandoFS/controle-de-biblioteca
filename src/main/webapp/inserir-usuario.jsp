@@ -9,6 +9,18 @@
 <script src="https://kit.fontawesome.com/5c46874868.js"></script>
 </head>
 <body>
+
+	<% String usuario = (String) request.getSession().getAttribute("usuario");
+		if(usuario != null) { %>
+			<p class="level"><strong> Bem vindo! <%= usuario %> </strong>
+			<a class = "level" href="logout.jsp">
+				<button class="button is-small is-danger is-rounded"><i class="fa-solid fa-right-from-bracket"></i>Sair</button>
+			</a>
+			</p>
+		<%} else { 
+			response.sendRedirect("login.jsp");	
+		}%>
+
 	<div class="container">
 		<form name="frmUser" action="inserir-usuario">		
 			<label class="label">Nome</label>

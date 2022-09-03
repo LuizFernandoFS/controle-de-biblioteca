@@ -56,27 +56,27 @@ public class DaoUsuario {
 	}
 
 	// Consultar Usuario Cadastrado -> READ
-	public Usuario consultarLivro(String cod) {
-		Usuario usuario = new Usuario();
-		String SQL = "SELECT * FROM tbUsuario WHERE id = ?";
-		try {
-			Connection conexao = Conexao.novaConexao();
-			PreparedStatement pst = conexao.prepareStatement(SQL);
-			pst.setString(1, cod);
-			ResultSet rs = pst.executeQuery();
-			while (rs.next()) {
-				// Setar as váriaveis do objeto contato
-				usuario.setId(rs.getString("id"));
-				usuario.setNome(rs.getString("nome"));
-				usuario.setEmail(rs.getString("email"));
-				usuario.setSenha(rs.getString("senha"));
-				usuario.setTipo(rs.getString("tipo"));
-			}
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return usuario;
-	}
+	public Usuario consultar(String nome, String senha){
+    	Usuario usuario = new Usuario();
+        try {
+        	Connection conexao = Conexao.novaConexao();
+        	String SQL = String.format("SELECT * FROM tbUsuario WHERE nome = '%s' AND senha = '%s';", nome, senha);
+        	PreparedStatement pst = conexao.prepareStatement(SQL);
+        	ResultSet rs = pst.executeQuery(SQL);
+            if (rs.next()){
+            	usuario.setId(rs.getString("id"));
+                usuario.setNome(rs.getString("nome"));
+                usuario.setEmail(rs.getString("email"));
+                usuario.setSenha(rs.getString("senha"));
+                usuario.setTipo(rs.getString("tipo"));
+            }
+            conexao.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        
+        return usuario;
+    }
 
 	/*
 	 * Alterar Livro Cadastrado -> UPDATE public int alterarLivro(int idLivro,
