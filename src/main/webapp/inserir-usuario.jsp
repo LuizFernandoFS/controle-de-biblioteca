@@ -33,7 +33,7 @@
 			
 			<a href="inserir-user.jsp">
 				<br>
-				<button class="button is-primary is-normal" onclick="validarForm()"><i class="fa-solid fa-book"></i>Adicionar</button>
+				<button class="button is-primary is-normal" onclick="validarForm()"><i class="fa-solid fa-user"></i>Adicionar</button>
 			</a>
 			
 			<a href="listagem" class="button is-danger is-normal">
